@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using RatingAdjustment.Services;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace BreadmakerReport.Models
 {
@@ -14,6 +17,23 @@ namespace BreadmakerReport.Models
         public string price { get; set; }
 
         public List<Review> Reviews { get; set; }
+
+
+        public double Average
+        {
+            get
+            {
+                return Reviews != null ? Reviews.Average(X => X.stars) : 0;
+            }
+        }
+
+        public double Adjusted
+        {
+            get
+            {
+                return new RatingAdjustmentService().Adjustdata(Average, Convert.ToDouble(Reviews?.Count));
+            }
+        }
     }
 
     public class Review
